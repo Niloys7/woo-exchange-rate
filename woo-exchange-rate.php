@@ -1,21 +1,27 @@
 <?php
 /*
  * Plugin Name: Multi Currency, Currency Switcher, Exchange Rates for WooCommerce - Mudra
- * Description: Allows to add exchange rates for WooCommerce 
+ * Description: Allows to add exchange rates for WooCommerce
  * Plugin URI: https://wordpress.org/plugins/woo-exchange-rate/
  * Version: 17.4
  * Author: Codeixer
  * Text Domain: woo-exchange-rate
  * Author URI: https://codeixer.com
+ * Tested up to: 6.8.1
+ * Requires at least: 5.5
+ * WC requires at least: 5.0
+ * WC tested up to: 9.9.3
+ * Requires PHP: 7.4
+ * Requires Plugins: woocommerce
  * License: GPLv2 or later
  */
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
-//Help handle assets
-define('WOOER_PLUGIN_URL', plugin_dir_url(__FILE__));
+// Help handle assets
+define( 'WOOER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Includes autoloader
@@ -33,20 +39,13 @@ add_action(
 		}
 	}
 );
-/**
- * Check if woocommerce plugin is enabled
- */
-if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-    add_action('admin_notices', 'wooer_startup_error');
-    return false;
-}
 
 /**
  * Plugin setup hooks
  */
-register_activation_hook(__FILE__, 'wooer_install');
-register_uninstall_hook(__FILE__, 'wooer_uninstall');
+register_activation_hook( __FILE__, 'wooer_install' );
+register_uninstall_hook( __FILE__, 'wooer_uninstall' );
 
 
 use WOOER\Main;
-return new Main();
+new Main();

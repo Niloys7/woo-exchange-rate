@@ -15,6 +15,7 @@ class Currency_Manager {
     public static function init() {
 
         
+        
         $self = new self();
 
         add_filter('woocommerce_currency', array($self, 'currency'), 9999, 1);
@@ -61,7 +62,8 @@ class Currency_Manager {
      * @return string
      */
     public static function get_currency_code() {
-        return isset($_SESSION[self::SESSION_KEY_CODE]) ? $_SESSION[self::SESSION_KEY_CODE] : get_option('woocommerce_currency');
+        $currency_code = isset($_SESSION[self::SESSION_KEY_CODE]) ? sanitize_text_field($_SESSION[self::SESSION_KEY_CODE]) : get_option('woocommerce_currency');
+        return $currency_code;
     }
 
     /**
@@ -110,9 +112,9 @@ class Currency_Manager {
      * Get currency position from session
      * @return string
      */
-    public static function get_currency_pos()
-    {
-        return isset($_SESSION[self::SESSION_KEY_POS]) ? $_SESSION[self::SESSION_KEY_POS] : get_option('woocommerce_currency_pos');
+    public static function get_currency_pos() {
+        $currency_pos = isset($_SESSION[self::SESSION_KEY_POS]) ? sanitize_text_field($_SESSION[self::SESSION_KEY_POS]) : get_option('woocommerce_currency_pos');
+        return $currency_pos;
     }
 
     /**

@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WOOER\\' => array($baseDir . '/lib', $baseDir . '/lib/admin', $baseDir . '/lib/models', $baseDir . '/lib/widgets'),
+    'CodesVault\\Howdyqb\\' => array($vendorDir . '/codesvault/howdy-qb/src'),
 );

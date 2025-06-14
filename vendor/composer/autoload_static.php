@@ -15,6 +15,10 @@ class ComposerStaticInit81efdc9f74fe3c7b2261adb32b8c0c77
         array (
             'WOOER\\' => 6,
         ),
+        'C' => 
+        array (
+            'CodesVault\\Howdyqb\\' => 19,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -24,6 +28,10 @@ class ComposerStaticInit81efdc9f74fe3c7b2261adb32b8c0c77
             1 => __DIR__ . '/../..' . '/lib/admin',
             2 => __DIR__ . '/../..' . '/lib/models',
             3 => __DIR__ . '/../..' . '/lib/widgets',
+        ),
+        'CodesVault\\Howdyqb\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/codesvault/howdy-qb/src',
         ),
     );
 
