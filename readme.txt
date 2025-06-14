@@ -1,6 +1,6 @@
 === Multi Currency, Currency Switcher, Exchange Rates for WooCommerce - Mudra ===
 Contributors: im_niloy, pkolomeitsev
-Tags: woocommerce, currency, exchage
+Tags: multi currency, woocommerce currency switcher, currency switcher, Exchange Rates
 Plugin URL: https://wordpress.org/plugins/woo-exchange-rate/
 Requires at least: 6.0
 Tested up to: 6.8

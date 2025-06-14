@@ -8,7 +8,7 @@
  * Text Domain: woo-exchange-rate
  * Author URI: https://codeixer.com
  * Tested up to: 6.8.1
- * Requires at least: 5.5
+ * Requires at least: 6.0
  * WC requires at least: 5.0
  * WC tested up to: 9.9.3
  * Requires PHP: 7.4
