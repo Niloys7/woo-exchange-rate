@@ -22,7 +22,6 @@ class Currency_Manager {
 
         add_filter('woocommerce_currency', array($self, 'currency'), 9999, 1);
         add_filter('woocommerce_currency_symbol', array($self, 'change_currency_symbol'), 10, 2);
-        add_action('woocommerce_checkout_update_order_meta', array($self, 'checkout_update_order_meta'), 10, 2);
     }
     
     /**
