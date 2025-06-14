@@ -33,7 +33,7 @@ class Exchange_Rate_Settings_Page {
 	 */
 	private function is_settings_page() {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended	
-		return isset( $_GET['page'] ) && 'wc-settings' === $_GET['page'] && isset( $_GET['tab'] ) && self::TAB === $_GET['tab'] && isset( $_GET['section'] ) && self::SECTION === $_GET['section'];
+		return isset( $_GET['page'], $_GET['tab'], $_GET['section'] ) && 'wc-settings' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) && self::TAB === sanitize_text_field( wp_unslash( $_GET['tab'] ) ) && self::SECTION === sanitize_text_field( wp_unslash( $_GET['section'] ) );
 	}
 
 	/**
@@ -45,9 +45,9 @@ class Exchange_Rate_Settings_Page {
 
 		$this->actions();
 		$this->notices();
-
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended	
 		if ( isset( $_GET['create'] ) || isset( $_GET['edit-id'] ) ) {
-			$id   = isset( $_GET['edit-id'] ) ? absint( $_GET['edit-id'] ) : 0;
+			$id   = isset( $_GET['edit-id'] ) ? absint( wp_unslash( $_GET['edit-id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$data = Exchange_Rate_Model::get_instance()->get_data_by_id( $id );
 			$this->edit_form_output( $data );
 		} else {
@@ -150,16 +150,19 @@ class Exchange_Rate_Settings_Page {
 
 		if ( $this->is_settings_page() ) {
 			// Remove
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( isset( $_GET['remove-id'] ) ) {
 				$this->remove_action();
 			}
 
 			// Bulk actions
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( isset( $_POST['action'] ) && isset( $_POST['id'] ) ) {
 				$this->bulk_actions();
 			}
 
 			// Save
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( isset( $_POST['save_exchange_rate'] ) ) {
 				$this->save_action();
 			}
@@ -170,10 +173,11 @@ class Exchange_Rate_Settings_Page {
 	 * Notices.
 	 */
 	public function notices() {
-
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['removed'] ) && 1 == $_GET['removed'] ) {
 			\WC_Admin_Settings::add_message( __( 'Exchange rate successfully removed', 'woo-exchange-rate' ) );
 		}
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['saved'] ) && 1 == $_GET['saved'] ) {
 			\WC_Admin_Settings::add_message( __( 'Your settings have been saved', 'woo-exchange-rate' ) );
 		}
@@ -185,28 +189,28 @@ class Exchange_Rate_Settings_Page {
 	 * Remove action
 	 */
 	private function remove_action() {
-		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'remove' ) ) {
-			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'woo-exchange-rate' ) );
+		// Ensure `$_REQUEST` is available before usage
+		if ( isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'remove' ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$id = isset( $_GET['remove-id'] ) ? absint( wp_unslash( $_GET['remove-id'] ) ) : 0;
+			Exchange_Rate_Model::get_instance()->delete( $id );
+
+			wp_redirect( esc_url_raw( add_query_arg( array( 'removed' => 1 ), $this->home_url ) ) );
+			exit();
 		}
-
-		$id = absint( $_GET['remove-id'] );
-		Exchange_Rate_Model::get_instance()->delete( $id );
-
-		wp_redirect( esc_url_raw( add_query_arg( array( 'removed' => 1 ), $this->home_url ) ) );
-		exit();
 	}
 
 	/**
 	 * Bulk actions
 	 */
 	private function bulk_actions() {
-		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'woocommerce-settings' ) ) {
+		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'woocommerce-settings' ) ) {
 			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'woo-exchange-rate' ) );
 		}
 
-		$ids = array_map( 'absint', (array) $_POST['id'] );
+		$ids = isset( $_POST['id'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['id'] ) ) : array();
 
-		if ( 'remove' == $_POST['action'] ) {
+		if ( isset( $_POST['action'] ) && 'remove' === sanitize_text_field( wp_unslash( $_POST['action'] ) ) ) {
 			$this->bulk_remove( $ids );
 		}
 
@@ -241,19 +245,20 @@ class Exchange_Rate_Settings_Page {
 	 */
 	private function save() {
 		// Verify request params
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( array_diff( array( 'currency_code', 'currency_exchange_rate', 'currency_pos' ), array_keys( $_REQUEST ) ) ) {
 			return false;
 		}
 
 		$data = array(
 			'id'                     => null,
-			'currency_code'          => isset( $_REQUEST['currency_code'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['currency_code'] ) ) : '',
-			'currency_pos'           => isset( $_REQUEST['currency_pos'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['currency_pos'] ) ) : '',
-			'currency_exchange_rate' => isset( $_REQUEST['currency_exchange_rate'] ) ? floatval( $_REQUEST['currency_exchange_rate'] ) : 0,
+			'currency_code'          => isset( $_REQUEST['currency_code'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['currency_code'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'currency_pos'           => isset( $_REQUEST['currency_pos'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['currency_pos'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'currency_exchange_rate' => isset( $_REQUEST['currency_exchange_rate'] ) ? floatval( wp_unslash( $_REQUEST['currency_exchange_rate'] ) ) : 0, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		);
-
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['edit-id'] ) ) {
-			$data['id'] = absint( $_GET['edit-id'] );
+			$data['id'] = absint( wp_unslash( $_GET['edit-id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
 		return Exchange_Rate_Model::get_instance()->save( $data );
