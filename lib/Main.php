@@ -35,6 +35,7 @@ class Main {
 
     public function register_widgets() {
         register_widget('\\WOOER\\Currency_List_Widget');
+
     }
 
     public function register_js() {
@@ -106,7 +107,7 @@ class Main {
      */
     public static function get_plugin_current_version () {
         require_once ABSPATH . '/wp-admin/includes/plugin.php';
-        $plugin_data = \get_plugin_data(__DIR__ . '/../woo-exchange-rate.php');
+        $plugin_data = \get_plugin_data(__DIR__ . '/../woo-exchange-rate.php',true,false);
         return isset($plugin_data['Version']) ? $plugin_data['Version'] : '';
     }
     
