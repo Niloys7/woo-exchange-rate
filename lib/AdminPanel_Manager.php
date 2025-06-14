@@ -83,7 +83,7 @@ class AdminPanel_Manager {
 
         $args = array(
             'id' => 'wooer_currency',
-            'title' => sprintf('%s (%s)', __('Currency', 'woocommerce'),  get_woocommerce_currency_symbol($current)),
+            'title' => sprintf('%s (%s)', __('Currency', 'woo-exchange-rate'),  get_woocommerce_currency_symbol($current)),
         );
         $wp_admin_bar->add_node($args);
 

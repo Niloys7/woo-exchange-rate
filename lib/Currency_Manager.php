@@ -14,9 +14,6 @@ class Currency_Manager {
 
     public static function init() {
 
-        if (!session_id()) {
-            session_start();
-        }
         
         $self = new self();
 
@@ -102,10 +99,10 @@ class Currency_Manager {
     {
         $currency_symbol = $currency_symbol ?: get_woocommerce_currency_symbol();
         return [
-            'left' => __('Left', 'woocommerce') . ' (' . $currency_symbol . '99.99)',
-            'right' => __('Right', 'woocommerce') . ' (99.99' . $currency_symbol . ')',
-            'left_space' => __('Left with space', 'woocommerce') . ' (' . $currency_symbol . ' 99.99)',
-            'right_space' => __('Right with space', 'woocommerce') . ' (99.99 ' . $currency_symbol . ')'
+            'left' => __('Left', 'woo-exchange-rate') . ' (' . $currency_symbol . '99.99)',
+            'right' => __('Right', 'woo-exchange-rate') . ' (99.99' . $currency_symbol . ')',
+            'left_space' => __('Left with space', 'woo-exchange-rate') . ' (' . $currency_symbol . ' 99.99)',
+            'right_space' => __('Right with space', 'woo-exchange-rate') . ' (99.99 ' . $currency_symbol . ')'
         ];
     }
     

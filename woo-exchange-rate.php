@@ -7,7 +7,7 @@
  * Author: Codeixer
  * Text Domain: woo-exchange-rate
  * Author URI: https://codeixer.com
- * License: https://opensource.org/licenses/GPL-2.0 GNU Public License
+ * License: GPLv2 or later
  */
 
 if (!defined('ABSPATH')) {

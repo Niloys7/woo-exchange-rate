@@ -94,7 +94,7 @@ class Exchange_Rate_Settings_Page {
             'id' => 'title');
 
         $settings[] = array(
-            'name' => __('Currency', 'woocommerce'),
+            'name' => __('Currency', 'woo-exchange-rate'),
             'id' => 'currency_code',
             'type' => 'select',
             'options' => $currencies,
@@ -103,8 +103,8 @@ class Exchange_Rate_Settings_Page {
         );
         
         $settings[] = array(
-            'name' => __( 'Currency Position', 'woocommerce' ),
-            'desc' => __('This controls the position of the currency symbol.', 'woocommerce'),
+            'name' => __( 'Currency Position', 'woo-exchange-rate' ),
+            'desc' => __('This controls the position of the currency symbol.', 'woo-exchange-rate'),
             'id' => 'currency_pos',
             'type' => 'select',
             'options' => $currency_pos,
@@ -115,7 +115,7 @@ class Exchange_Rate_Settings_Page {
         
         $settings[] = array(
             'name' => __('Exchange rate', 'woo-exchange-rate'),
-            'desc' => __('Decimal Separator', 'woocommerce') . ' "."',
+            'desc' => __('Decimal Separator', 'woo-exchange-rate') . ' "."',
             'id' => 'currency_exchange_rate',
             'type' => 'text',
             'css' => 'width:350px;',
@@ -130,13 +130,13 @@ class Exchange_Rate_Settings_Page {
         echo '<input type="hidden" id="id" value="' . esc_attr($data['id']) . '" />';
         
         if (isset($data['id']) && !$data['id']) {
-            submit_button(__('Add', 'woocommerce'), 'primary', 'save_exchange_rate');
+            submit_button(__('Add', 'woo-exchange-rate'), 'primary', 'save_exchange_rate');
         } else {
             echo '<p class="submit"> ';
-            submit_button(__('Save changes', 'woocommerce'), 'primary', 'save_exchange_rate', false);
+            submit_button(__('Save changes', 'woo-exchange-rate'), 'primary', 'save_exchange_rate', false);
             echo '<a style="color: #a00; text-decoration: none; margin-left: 10px;" href="';
             echo esc_url(wp_nonce_url(add_query_arg(array('remove-id' => $data['id']), $this->home_url), 'remove'));
-            echo '">' . __('Remove', 'woocommerce') . '</a>';
+            echo '">' . __('Remove', 'woo-exchange-rate') . '</a>';
             echo '</p>';
         }
     }
@@ -187,7 +187,7 @@ class Exchange_Rate_Settings_Page {
      */
     private function remove_action() {
         if (empty($_REQUEST['_wpnonce']) || !wp_verify_nonce($_REQUEST['_wpnonce'], 'remove')) {
-            wp_die(__('Action failed. Please refresh the page and retry.', 'woocommerce'));
+            wp_die(__('Action failed. Please refresh the page and retry.', 'woo-exchange-rate'));
         }
 
         $id = absint($_GET['remove-id']);
@@ -202,7 +202,7 @@ class Exchange_Rate_Settings_Page {
      */
     private function bulk_actions() {
         if (empty($_REQUEST['_wpnonce']) || !wp_verify_nonce($_REQUEST['_wpnonce'], 'woocommerce-settings')) {
-            wp_die(__('Action failed. Please refresh the page and retry.', 'woocommerce'));
+            wp_die(__('Action failed. Please refresh the page and retry.', 'woo-exchange-rate'));
         }
 
         $ids = array_map('absint', (array) $_POST['id']);
@@ -228,7 +228,7 @@ class Exchange_Rate_Settings_Page {
     
     private function save_action() {
         if ($this->save() === FALSE) {
-            wp_die(__('Action failed. Please refresh the page and retry.', 'woocommerce'));
+            wp_die(__('Action failed. Please refresh the page and retry.', 'woo-exchange-rate'));
         }
         
         wp_redirect(esc_url_raw(add_query_arg(array('saved' => 1), $this->home_url)));
