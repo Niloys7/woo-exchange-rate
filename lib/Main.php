@@ -38,7 +38,14 @@ class Main {
 	public function register_js() {
 		wp_enqueue_script( 'ajax-script', WOOER_PLUGIN_URL . 'assets/js/woo-exchange-rate.js', array( 'jquery' ), self::get_plugin_current_version(), true );
 		// in JavaScript, object properties are accessed as woo-exchange-rate.ajax_url
-		wp_localize_script( 'ajax-script', 'woo_exchange_rate', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+		wp_localize_script(
+			'ajax-script',
+			'woo_exchange_rate',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'change_currency_nonce' ),
+			)
+		);
 	}
 
 	/**
@@ -47,9 +54,15 @@ class Main {
 	public function change_currency_action() {
 		global $wp_widget_factory;
 
+		// check nonce
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'change_currency_nonce' ) ) {
+			
+			wp_send_json_error( array( 'message' => __( 'Invalid request, nonce error', 'woo-exchange-rate' ) ) );
+			wp_die();
+		}
+	
 		// validate code
-		$code = sanitize_text_field( $_POST['currency_code'] );
-
+		$code = isset( $_POST['currency_code'] ) ? sanitize_text_field( wp_unslash( $_POST['currency_code'] ) ) : '';
 		// store in session new currency
 		Currency_Manager::set_currency_code( $code );
 
