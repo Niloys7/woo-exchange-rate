@@ -3,14 +3,14 @@
  * Plugin Name: Multi Currency, Currency Switcher, Exchange Rates for WooCommerce - Mudra
  * Description: Allows to add exchange rates for WooCommerce
  * Plugin URI: https://wordpress.org/plugins/woo-exchange-rate/
- * Version: 17.4
+ * Version: 17.5
  * Author: Codeixer
  * Text Domain: woo-exchange-rate
  * Author URI: https://codeixer.com
  * Tested up to: 6.8.1
  * Requires at least: 6.0
  * WC requires at least: 5.0
- * WC tested up to: 9.9.3
+ * WC tested up to: 9.9.4
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * License: GPLv2 or later
