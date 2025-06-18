@@ -4,7 +4,7 @@ Tags: multi currency, woocommerce currency switcher, currency switcher, Exchange
 Plugin URL: https://wordpress.org/plugins/woo-exchange-rate/
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 17.4
+Stable tag: 17.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
