@@ -13,7 +13,7 @@ class Main {
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		// Register JS
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_js' ) ); // front
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_js' ) );// admin
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_js' ) ); // admin
 		add_action( 'wp_ajax_change_currency_action', array( $this, 'change_currency_action' ) );
 		add_action( 'wp_ajax_nopriv_change_currency_action', array( $this, 'change_currency_action' ) );
 		// Register WP widget
@@ -56,11 +56,11 @@ class Main {
 
 		// check nonce
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'change_currency_nonce' ) ) {
-			
+
 			wp_send_json_error( array( 'message' => __( 'Invalid request, nonce error', 'woo-exchange-rate' ) ) );
 			wp_die();
 		}
-	
+
 		// validate code
 		$code = isset( $_POST['currency_code'] ) ? sanitize_text_field( wp_unslash( $_POST['currency_code'] ) ) : '';
 		// store in session new currency
@@ -69,8 +69,9 @@ class Main {
 		// recalculate cart totals (refresh with new price)
 		\WC()->cart->calculate_totals();
 
+		$data = array( 'currency_code' => $code );
 		// output JSON
-		echo json_encode( array( 'currency_code' => $code ) );
+		echo wp_json_encode( $data );
 		wp_die();
 	}
 
