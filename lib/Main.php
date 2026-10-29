@@ -61,8 +61,11 @@ class Main {
 			wp_die();
 		}
 
-		// validate code
-		$code = isset( $_POST['currency_code'] ) ? sanitize_text_field( wp_unslash( $_POST['currency_code'] ) ) : '';
+		// validate code: only the store currency or a currency with an exchange rate
+		$code = isset( $_POST['currency_code'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_POST['currency_code'] ) ) ) : '';
+		if ( ! preg_match( '/^[A-Z]{3}$/', $code ) || ( get_option( 'woocommerce_currency' ) !== $code && null === Exchange_Rate_Model::get_instance()->get_exchange_rate_by_code( $code ) ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid currency', 'woo-exchange-rate' ) ), 400 );
+		}
 		// store in session new currency
 		Currency_Manager::set_currency_code( $code );
 
