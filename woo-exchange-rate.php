@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Help handle assets
+define( 'WOOER_VERSION', '17.5.0' );
 define( 'WOOER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WOOER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
