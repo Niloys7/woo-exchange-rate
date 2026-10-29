@@ -230,6 +230,12 @@ class Exchange_Rate_Settings_Page {
 	}
 
 	private function save_action() {
+		// The WooCommerce settings form carries the 'woocommerce-settings' nonce
+		check_admin_referer( 'woocommerce-settings' );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You do not have permission to change exchange rates.', 'woo-exchange-rate' ) );
+		}
+
 		if ( $this->save() === false ) {
 			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'woo-exchange-rate' ) );
 		}
