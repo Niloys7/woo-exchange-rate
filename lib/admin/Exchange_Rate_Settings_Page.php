@@ -195,7 +195,7 @@ class Exchange_Rate_Settings_Page {
 			$id = isset( $_GET['remove-id'] ) ? absint( wp_unslash( $_GET['remove-id'] ) ) : 0;
 			Exchange_Rate_Model::get_instance()->delete( $id );
 
-			wp_redirect( esc_url_raw( add_query_arg( array( 'removed' => 1 ), $this->home_url ) ) );
+			wp_safe_redirect( esc_url_raw( add_query_arg( array( 'removed' => 1 ), $this->home_url ) ) );
 			exit();
 		}
 	}
@@ -214,7 +214,7 @@ class Exchange_Rate_Settings_Page {
 			$this->bulk_remove( $ids );
 		}
 
-		wp_redirect( esc_url_raw( add_query_arg( array( 'removed' => 1 ), $this->home_url ) ) );
+		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'removed' => 1 ), $this->home_url ) ) );
 		exit();
 	}
 
@@ -230,11 +230,17 @@ class Exchange_Rate_Settings_Page {
 	}
 
 	private function save_action() {
+		// The WooCommerce settings form carries the 'woocommerce-settings' nonce
+		check_admin_referer( 'woocommerce-settings' );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You do not have permission to change exchange rates.', 'woo-exchange-rate' ) );
+		}
+
 		if ( $this->save() === false ) {
 			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'woo-exchange-rate' ) );
 		}
 
-		wp_redirect( esc_url_raw( add_query_arg( array( 'saved' => 1 ), $this->home_url ) ) );
+		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'saved' => 1 ), $this->home_url ) ) );
 		exit();
 	}
 

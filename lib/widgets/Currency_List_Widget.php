@@ -57,7 +57,8 @@ class Currency_List_Widget extends \WC_Widget {
         $settings[] = array('type' => 'sectionend', 'id' => 'woo-exchange-rate');
 
         // Output widget
-        echo '<div class="currency_wrapper">';
+        echo '<div class="currency_wrapper"><table class="form-table">';
+        // output_fields() prints table rows; the sectionend field closes the table
         \WC_Admin_Settings::output_fields($settings);
         echo '</div>';
         

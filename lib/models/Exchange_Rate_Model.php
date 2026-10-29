@@ -41,7 +41,7 @@ class Exchange_Rate_Model {
 
     public function get_exchange_rate_by_code($code = '') {
         if (!$code) {
-            throw new Exception('Currency code is not present!');
+            throw new \Exception('Currency code is not present!');
         }
 
        return $this->db->get_var($this->db->prepare("
@@ -51,7 +51,7 @@ class Exchange_Rate_Model {
     
     public function get_currency_pos_by_code($code = '') {
         if (!$code) {
-            throw new Exception('Currency code is not present!');
+            throw new \Exception('Currency code is not present!');
         }
 
        return $this->db->get_var($this->db->prepare("

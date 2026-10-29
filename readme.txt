@@ -1,10 +1,10 @@
 === Multi Currency, Currency Switcher, Exchange Rates for WooCommerce - Mudra ===
-Contributors: im_niloy, pkolomeitsev
+Contributors: im_niloy, pkolomeitsev, blazecommerce
 Tags: multi currency, woocommerce currency switcher, currency switcher, Exchange Rates
 Plugin URL: https://wordpress.org/plugins/woo-exchange-rate/
 Requires at least: 6.0
-Tested up to: 6.8
-Stable tag: 17.5.0
+Tested up to: 7.1
+Stable tag: 17.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,15 @@ Please check if WooCommerce plugin already installed before to start.
 6. Admin panel currency switcher
 
 == Changelog ==
+
+= 17.6.0 =
+* Tested up to WordPress 7.1 and WooCommerce 11.2
+* Fixed a fatal error when the currency switcher sent an empty currency code
+* Fixed: the currency switcher only accepts the store currency or a currency with an exchange rate
+* Security: the exchange rate form now checks a nonce and the manage_woocommerce capability
+* The selected currency is kept in the WooCommerce session instead of a PHP session. This clears the Site Health "active PHP session" warning and lets page caches work
+* Fixed the widget markup
+* Prefixed the script handle to avoid clashes with other plugins
 
 = 17.5.0 =
 * Fixed issue with loading the text domain

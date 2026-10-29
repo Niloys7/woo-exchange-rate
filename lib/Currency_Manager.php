@@ -8,16 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Currency_Manager {
 
-	const SESSION_KEY_CODE = 'currency_code';
-	const SESSION_KEY_POS  = 'currency_pos';
+	const SESSION_KEY_CODE = 'wooer_currency_code';
+	const SESSION_KEY_POS  = 'wooer_currency_pos';
 	const CACHEID          = 'WOOER_Currency_Manager_';
 
 	public static function init() {
-
-			// Start session if not already started
-		if ( session_status() === PHP_SESSION_NONE ) {
-			session_start();
-		}
 
 		$self = new self();
 
@@ -68,8 +63,9 @@ class Currency_Manager {
 	 * @return string
 	 */
 	public static function get_currency_code() {
-		$currency_code = isset( $_SESSION[ self::SESSION_KEY_CODE ] ) ? sanitize_text_field( $_SESSION[ self::SESSION_KEY_CODE ] ) : get_option( 'woocommerce_currency' );
-		return $currency_code;
+		$session       = self::session();
+		$currency_code = $session ? $session->get( self::SESSION_KEY_CODE ) : null;
+		return $currency_code ? sanitize_text_field( $currency_code ) : get_option( 'woocommerce_currency' );
 	}
 
 	/**
@@ -78,7 +74,15 @@ class Currency_Manager {
 	 * @param string $code
 	 */
 	public static function set_currency_code( $code ) {
-		$_SESSION[ self::SESSION_KEY_CODE ] = $code;
+		$session = self::session();
+		if ( ! $session ) {
+			return;
+		}
+		// Guests have no WooCommerce session cookie until they add to cart
+		if ( ! $session->has_session() ) {
+			$session->set_customer_session_cookie( true );
+		}
+		$session->set( self::SESSION_KEY_CODE, $code );
 
 		$position = Exchange_Rate_Model::get_instance()->get_currency_pos_by_code( $code );
 		self::set_currency_pos( $position );
@@ -121,8 +125,9 @@ class Currency_Manager {
 	 * @return string
 	 */
 	public static function get_currency_pos() {
-		$currency_pos = isset( $_SESSION[ self::SESSION_KEY_POS ] ) ? sanitize_text_field( $_SESSION[ self::SESSION_KEY_POS ] ) : get_option( 'woocommerce_currency_pos' );
-		return $currency_pos;
+		$session      = self::session();
+		$currency_pos = $session ? $session->get( self::SESSION_KEY_POS ) : null;
+		return $currency_pos ? sanitize_text_field( $currency_pos ) : get_option( 'woocommerce_currency_pos' );
 	}
 
 	/**
@@ -131,7 +136,19 @@ class Currency_Manager {
 	 * @param string $pos
 	 */
 	public static function set_currency_pos( $pos ) {
-		$_SESSION[ self::SESSION_KEY_POS ] = $pos;
+		$session = self::session();
+		if ( $session ) {
+			$session->set( self::SESSION_KEY_POS, $pos );
+		}
+	}
+
+	/**
+	 * WooCommerce customer session (front end, AJAX and Store API requests)
+	 *
+	 * @return \WC_Session|null
+	 */
+	private static function session() {
+		return function_exists( 'WC' ) && WC()->session ? WC()->session : null;
 	}
 
 	public static function get_currency_rate() {

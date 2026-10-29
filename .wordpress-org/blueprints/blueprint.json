@@ -1,0 +1,54 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "meta": {
+    "title": "Multi Currency, Currency Switcher, Exchange Rates for WooCommerce - Mudra demo",
+    "author": "blazecommerce"
+  },
+  "landingPage": "/shop/",
+  "preferredVersions": {
+    "php": "8.3",
+    "wp": "latest"
+  },
+  "features": {
+    "networking": true
+  },
+  "login": true,
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "woocommerce"
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "woo-exchange-rate"
+      }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "wordpress.org/themes",
+        "slug": "storefront"
+      }
+    },
+    {
+      "step": "setSiteOptions",
+      "options": {
+        "permalink_structure": "/%postname%/",
+        "woocommerce_onboarding_profile": {
+          "skipped": true
+        },
+        "woocommerce_coming_soon": "no",
+        "woocommerce_currency": "USD"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php\nrequire '/wordpress/wp-load.php';\n$items = array(\n\tarray( 'Classic Leather Wallet', '49', 'WALLET-01' ),\n\tarray( 'Canvas Weekend Bag', '129', 'BAG-02' ),\n\tarray( 'Ceramic Pour-Over Set', '64', 'POUR-03' ),\n\tarray( 'Merino Wool Beanie', '35', 'BEANIE-04' ),\n);\nforeach ( $items as $item ) {\n\t$p = new WC_Product_Simple();\n\t$p->set_name( $item[0] );\n\t$p->set_regular_price( $item[1] );\n\t$p->set_sku( $item[2] );\n\t$p->set_status( 'publish' );\n\t$p->save();\n}\nglobal $wpdb;\n$rates = array(\n\tarray( 'USD', 'left', 1 ),\n\tarray( 'EUR', 'right_space', 0.92 ),\n\tarray( 'GBP', 'left', 0.79 ),\n\tarray( 'AUD', 'left', 1.52 ),\n);\nforeach ( $rates as $rate ) {\n\t$wpdb->insert( $wpdb->prefix . 'woocommerce_exchange_rate', array( 'currency_code' => $rate[0], 'currency_pos' => $rate[1], 'currency_exchange_rate' => $rate[2] ) );\n}\nupdate_option( 'widget_woo_exchange_rate_widget', array( 2 => array( 'title' => 'Currency' ), '_multiwidget' => 1 ) );\n$sidebars              = get_option( 'sidebars_widgets', array() );\n$sidebars['sidebar-1'] = array( 'woo_exchange_rate_widget-2' );\nupdate_option( 'sidebars_widgets', $sidebars );\nflush_rewrite_rules();\n"
+    }
+  ]
+}

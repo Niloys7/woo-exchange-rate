@@ -36,10 +36,10 @@ class Main {
 	}
 
 	public function register_js() {
-		wp_enqueue_script( 'ajax-script', WOOER_PLUGIN_URL . 'assets/js/woo-exchange-rate.js', array( 'jquery' ), self::get_plugin_current_version(), true );
+		wp_enqueue_script( 'wooer-currency-switcher', WOOER_PLUGIN_URL . 'assets/js/woo-exchange-rate.js', array( 'jquery' ), self::get_plugin_current_version(), true );
 		// in JavaScript, object properties are accessed as woo-exchange-rate.ajax_url
 		wp_localize_script(
-			'ajax-script',
+			'wooer-currency-switcher',
 			'woo_exchange_rate',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -61,8 +61,11 @@ class Main {
 			wp_die();
 		}
 
-		// validate code
-		$code = isset( $_POST['currency_code'] ) ? sanitize_text_field( wp_unslash( $_POST['currency_code'] ) ) : '';
+		// validate code: only the store currency or a currency with an exchange rate
+		$code = isset( $_POST['currency_code'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_POST['currency_code'] ) ) ) : '';
+		if ( ! preg_match( '/^[A-Z]{3}$/', $code ) || ( get_option( 'woocommerce_currency' ) !== $code && null === Exchange_Rate_Model::get_instance()->get_exchange_rate_by_code( $code ) ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid currency', 'woo-exchange-rate' ) ), 400 );
+		}
 		// store in session new currency
 		Currency_Manager::set_currency_code( $code );
 
@@ -114,14 +117,12 @@ class Main {
 	}
 
 	/**
-	 * Current plugin version from PHP file
+	 * Current plugin version (WOOER_VERSION, kept in step with the plugin header)
 	 *
 	 * @return string
 	 */
 	public static function get_plugin_current_version() {
-		require_once ABSPATH . '/wp-admin/includes/plugin.php';
-		$plugin_data = \get_plugin_data( __DIR__ . '/../woo-exchange-rate.php', true, false );
-		return isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '';
+		return WOOER_VERSION;
 	}
 
 	/**
